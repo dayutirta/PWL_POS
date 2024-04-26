@@ -40,11 +40,7 @@ class TransaksiController extends Controller
         ->addIndexColumn() 
         ->addColumn('aksi', function ($transaksi) {
             $btn = '<a href="'.url('/transaksi/' . $transaksi->penjualan_id).'" class="btn btn-info btn-sm">Detail</a> ';
-            $btn .= '<a href="'.url('/transaksi/' . $transaksi->penjualan_id . '/edit').'" class="btn btn-warning btn-sm">Edit</a> ';
-            $btn .= '<form class="d-inline-block" method="POST" action="'.url('/transaksi/'.$transaksi->penjualan_id).'">'
-                    .csrf_field() .method_field('DELETE') . 
-                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>'; 
-        return $btn;})
+            return $btn;})
         ->rawColumns(['aksi'])
         ->make(true);
     }
@@ -69,8 +65,8 @@ class TransaksiController extends Controller
     {
         $request->validate([
             'penjualan_kode'    => 'required|string',
-            'user_id'           => 'required|string|unique:t_transaksi,user_id',
-            'pembeli'           => 'required|string|unique:t_transaksi,pembeli',
+            'user_id'           => 'required|string',
+            'pembeli'           => 'required|string',
             'penjualan_tanggal' => 'required|date',
             'barang_id'         => 'required|integer',
             'jumlah'            => 'required|integer'
@@ -84,8 +80,9 @@ class TransaksiController extends Controller
     
         $barang = BarangModel::findOrFail($request->barang_id);
         $harga_jual = $barang->harga_jual;
-        $total_harga = $harga_jual * $request->jumlah;
-        $penjualan_id = $penjualan->id;
+        $jumlah = $request->jumlah;
+        $total_harga = $harga_jual * $jumlah;
+        $penjualan_id = $penjualan->penjualan_id;
 
         DetailModel::create([
             'penjualan_id' => $penjualan_id,
@@ -100,7 +97,11 @@ class TransaksiController extends Controller
 
     public function show(string $id)
     {
+
         $transaksi = TransaksiModel::with('detail')->find($id);
+      
+        $detail = DetailModel::with('barang')->where('penjualan_id', $id)->get();
+        
         $breadcrumb = (object) [
             'title' => 'Detail Transaksi',
             'list' => ['Home', 'Transaksi', 'Detail']
@@ -109,74 +110,6 @@ class TransaksiController extends Controller
             'title' => 'Detail Transaksi',
         ];
         $activeMenu = 'transaksi'; 
-        return view('transaksi.show', ['breadcrumb' => $breadcrumb, 'page' => $page,'transaksi' => $transaksi,'activeMenu' => $activeMenu]);
-    }
-
-    public function edit(string $id)
-    {
-        $transaksi = TransaksiModel::find($id);
-        $detail = DetailModel::all();
-        $user = UserModel::all();
-        $barang = BarangModel::all();
-        $breadcrumb = (object) [
-            'title' => 'Edit Transaksi',
-            'list' => ['Home', 'Transaksi', 'Edit']
-        ];
-        $page = (object) [
-            'title' => 'Edit Transaksi'
-        ];
-        $activeMenu = 'transaksi'; 
-        return view('transaksi.edit', ['breadcrumb' => $breadcrumb, 'page' => $page,'transaksi' => $transaksi,'detail' => $detail,'barang'=>$barang,'user'=>$user,'activeMenu' => $activeMenu]);
-    }
-
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'penjualan_kode'    => 'required|string',
-            'user_id'           => 'required|string',
-            'pembeli'           => 'required|string',
-            'penjualan_tanggal' => 'required|date',
-            'barang_id'         => 'required|integer',
-            'jumlah'            => 'required|integer'
-        ]);
-    
-        $transaksi = TransaksiModel::find($id);
-        $transaksi->update([
-            'penjualan_kode'    => $request->penjualan_kode,
-            'user_id'           => $request->user_id,
-            'pembeli'           => $request->pembeli,  
-            'penjualan_tanggal' => $request->penjualan_tanggal
-        ]);
-        $detail = DetailModel::where('penjualan_id', $id)->first();
-        if ($detail) {
-            $barang = BarangModel::findOrFail($request->barang_id);
-            $harga_jual = $barang->harga_jual;
-            $total_harga = $harga_jual * $request->jumlah;
-    
-            $detail->update([
-                'barang_id' => $request->barang_id,
-                'jumlah'    => $request->jumlah,
-                'harga'     => $total_harga
-            ]);
-        }
-    
-        return redirect('/transaksi')->with('success', 'Data transaksi berhasil diubah');
-    }
-    
-    
-    public function destroy(string $id)
-    {
-        $check = TransaksiModel::find($id);
-        if(!$check){
-            return redirect('/transaksi')->with('error','Data transaksi tidak ditemukan');
-        }
-        try{
-            TransaksiModel::destroy($id);
-            return redirect('/transaksi')->with('succes','Data berhasil dihapus');
-        }catch(\Illuminate\Database\QueryException $e){
-            //jika terjadi error, redirect kembali ke halaman dengan membawa pesan error
-            return redirect('/transaksi')->with('error','Data transaksi gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
-        }
+        return view('transaksi.show', ['breadcrumb' => $breadcrumb,'detail'=>$detail,'page' => $page,'transaksi' => $transaksi,'activeMenu' => $activeMenu]);
     }
 }
-

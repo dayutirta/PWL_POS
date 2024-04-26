@@ -7,7 +7,7 @@
             <div class="card-tools"></div>
         </div>
         <div class="card-body">
-            @empty($detail)
+            @empty($transaksi)
             <div class="alert alert-danger alert-dismissible">
                 <h5><i class="icon fas fa-ban"></i> Kesalahan!</h5>
                 Data yang Anda cari tidak ditemukan.
@@ -16,27 +16,44 @@
                 <table class="table table-bordered table-striped table-hover table-sm">
                     <tr>
                         <th>ID</th>
-                        <td>{{ $detail->barang_id }}</td>
+                        <td>{{ $transaksi->penjualan_id }}</td>
                     </tr>
                     <tr>
-                        <th>Level</th>
-                        <td>{{ $user->level->level_nama }}</td>
-                    </tr>                    
+                        <th>Kode Penjualan</th>
+                        <td>{{  $transaksi->penjualan_kode }}</td>
+                    </tr> 
                     <tr>
-                        <th>Username</th>
-                        <td>{{ $user->username }}</td>
+                        <th>Nama User</th>
+                        <td>{{ $transaksi->user->nama }}</td>
                     </tr>
                     <tr>
-                        <th>Nama</th>
-                        <td>{{ $user->nama }}</td>
+                        <th>Pembeli</th>
+                        <td>{{ $transaksi->pembeli }}</td>
                     </tr>
                     <tr>
-                        <th>Password</th>
-                        <td>********</td>
+                        <th>Barang</th>
+                        <td>
+                            @foreach ($detail as $item)
+                                {{ $item->barang[0]->barang_nama }} 
+                            @endforeach
+                        </td>
+                    </tr> 
+                    <tr>
+                        <th>Jumlah</th>
+                        <td>{{ $transaksi->detail->jumlah }}</td>
                     </tr>
+                    <tr>
+                        <th>Harga</th>
+                        <td>Rp {{ number_format($transaksi->detail->harga, 0, ',', '.') }}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th>Tanggal</th>
+                        <td>{{ $transaksi->penjualan_tanggal }}</td>
+                    </tr>                   
                 </table>
             @endempty
-            <a href="{{ url('user') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
+            <a href="{{ url('transaksi') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
         </div>
     </div>
 @endsection

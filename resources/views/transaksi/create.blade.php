@@ -7,57 +7,81 @@
             <div class="card-tools"></div>
         </div>
         <div class="card-body">
-        <form method="POST" action="{{ url('user') }}" class="form-horizontal">
+        <form method="POST" action="{{ url('transaksi') }}" class="form-horizontal">
             @csrf
             <div class="form-group row">
-                <label class="col-1 control-label col-form-label">Level</label>
+                <label class="col-1 control-label col-form-label">User</label>
                 <div class="col-11">
-                    <select class="form-control" id="level_id" name="level_id" required>
-                        <option value=""disabled selected>- Pilih Level -</option>
-                        @foreach($level as $item)
-                            <option value="{{ $item->level_id }}">{{ $item->level_nama }}</option>
+                    <select class="form-control" id="user_id" name="user_id" required>
+                        <option value=""disabled selected>- Pilih User -</option>
+                        @foreach($user as $item)
+                            <option value="{{ $item->user_id }}">{{ $item->nama }}</option>
                         @endforeach
                     </select>
-                    @error('level_id')
+                    @error('user_id')
                         <small class="form-text text-danger">{{ $message }}</small>
                     @enderror
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-1 control-label col-form-label">Barang</label>
+            <div class="col-11">
+                <select class="form-control" id="barang_id" name="barang_id" required>
+                    <option value=""disabled selected>- Pilih User -</option>
+                    @foreach($barang as $item)
+                        <option value="{{ $item->barang_id }}">{{ $item->barang_nama }}</option>
+                    @endforeach
+                </select>
+                @error('barang_id')
+                    <small class="form-text text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+        </div>
 <div class="form-group row">
-<label class="col-1 control-label col-form-label">Username</label>
+<label class="col-1 control-label col-form-label">Kode Penjualan</label>
 <div class="col-11">
-<input type="text" class="form-control" id="username" name="username"
-value="{{ old('username') }}" required>
-@error('username')
+<input type="text" class="form-control" id="penjualan_kode" name="penjualan_kode"
+value="{{ old('penjualan_kode') }}" required>
+@error('penjualan_kode')
 <small class="form-text text-danger">{{ $message }}</small>
 @enderror
 </div>
 </div>
 <div class="form-group row">
-<label class="col-1 control-label col-form-label">Nama</label>
+<label class="col-1 control-label col-form-label">Pembeli</label>
 <div class="col-11">
-<input type="text" class="form-control" id="nama" name="nama"
-value="{{ old('nama') }}" required>
-@error('nama')
+<input type="text" class="form-control" id="pembeli" name="pembeli"
+value="{{ old('pembeli') }}" required>
+@error('pembeli')
 <small class="form-text text-danger">{{ $message }}</small>
 @enderror
 </div>
 </div>
 <div class="form-group row">
-<label class="col-1 control-label col-form-label">Password</label>
-<div class="col-11">
-<input type="password" class="form-control" id="password"
-name="password" required>
-@error('password')
-<small class="form-text text-danger">{{ $message }}</small>
-@enderror
-</div>
-</div>
+    <label class="col-1 control-label col-form-label">Tanggal</label>
+    <div class="col-11">
+    <input type="date" class="form-control" id="penjualan_tanggal" name="penjualan_tanggal"
+    value="{{ old('penjualan_tanggal') }}" required>
+    @error('penjualan_tanggal')
+    <small class="form-text text-danger">{{ $message }}</small>
+    @enderror
+    </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-1 control-label col-form-label">Jumlah</label>
+        <div class="col-11">
+        <input type="int" class="form-control" id="jumlah" name="jumlah"
+        value="{{ old('jumlah') }}" required>
+        @error('jumlah')
+        <small class="form-text text-danger">{{ $message }}</small>
+        @enderror
+        </div>
+        </div>
 <div class="form-group row">
 <label class="col-1 control-label col-form-label"></label>
 <div class="col-11">
 <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-<a class="btn btn-sm btn-default ml-1" href="{{ url('user') 
+<a class="btn btn-sm btn-default ml-1" href="{{ url('transaksi') 
 }}">Kembali</a>
 </div>
 </div>
