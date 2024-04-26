@@ -1,12 +1,12 @@
 @extends('adminlte::auth.auth-page', ['auth_type'=>'login'])
 
 @section('adminlte_css_pre')
-    <link rel="stylesheet" href="{{asset('vendor/icheck-bootstrap/icheck-bootstrap.mmin.css')}}">
+    <link rel="stylesheet" href="{{asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css')}}">
 @stop
 
-@php($login_url = view::getSection('login_url')?? config('adminlte.login_url','login'))
-@php($register_url = view::getSection('register_url')?? config('adminlte.register_url','registes'))
-@php($password_reset_url = view::getSection('password_reset_url')?? config('adminlte.password_reset_url','password/reset'))
+@php($login_url = View::getSection('login_url') ?? config('adminlte.login_url','login'))
+@php($register_url = View::getSection('register_url')?? config('adminlte.register_url','registes'))
+@php($password_reset_url = View::getSection('password_reset_url')?? config('adminlte.password_reset_url','password/reset'))
 
 @if (config ('adminlte.use_route_url',false))
     @php($login_url = $login_url ? route($login_url):'')
@@ -21,48 +21,53 @@
 @section('auth_header', __('adminlte::adminlte.login_message'))
 
 @section('auth_body')
-    @error('login_gagal')
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <span class="alert-inner--text"><strong>Warning!</strong>{{$massage}}</span>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </div>
-    @enderror
+@error('login_gagal')
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <span class="alert-inner--text"><strong>Warning!</strong>{{ $message }}</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+</div>
+@enderror
+
     <form action="{{url ('proses_login')}}" method="post">
         @csrf
-
+        {{-- email --}}
         <div class="input-group mb-3">
             <input type="text" name="username" class="form-control @error('username') is-invalid @enderror" value="{{old('username')}}" placeholder="Username" autofocus>
+
             <div class="input-group-append">
                 <div class="input-group-text">
                     <span class="fas fa-envelope {{config('adminlte.classes_auth_icon','')}}"></span>
                 </div>
             </div>
+
             @error('username')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{$message}}</strong>
                 </span>
             @enderror
         </div>
+{{-- password --}}
+<div class="input-group mb-3">
+    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{ __('adminlte::adminlte.password')}}">
 
-        <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="{{__('adminlte::adminlte.password')}}">
-
-            <div class="input-group-append">
-                <div class="input-group-text">
-                    <span class="fas fa-lock {{config('adminlte.classes_auth_icon','')}}"></span>
-                </div>
-            </div>
-            @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{$message}}</strong>
-                </span>
-            @enderror
+    <div class="input-group-append">
+        <div class="input-group-text">
+            <span class="fas fa-lock {{config('adminlte.classes_auth_icon','')}}"></span>
         </div>
-        
+    </div>
+
+    @error('password')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{$message}}</strong>
+        </span>
+    @enderror
+</div>
+
+        {{-- login field --}}
         <div class="row">
             <div class="col-7">
                 <div class="icheck-primary" title="{{__('adminlte::adminlte.remember_me_hint')}}">
-                    <input type="checkbox" name="remember" id="remember" {{old('remember')?'checked':''}}>
+                    <input type="checkbox" name="remember" id="remember" {{old('remember')? 'checked':''}}>
 
                     <label for="remember">
                         {{__('adminlte::adminlte.remember_me')}}

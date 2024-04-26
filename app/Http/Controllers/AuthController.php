@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,15 +14,15 @@ class AuthController extends Controller
     {
         //kita ambil data user
         $user = Auth::user();
-
+        
         //kondisi user=true
         if($user){
             //admin
-            if ($user->level_id== '1'){
+            if ($user->level_id == '1'){
                 return redirect()->intended('admin');
             }
             //manager
-            else if ($user->level_id== '2'){
+            else if ($user->level_id == '2'){
                 return redirect()->intended('manager');
             }
         }
@@ -37,18 +38,20 @@ class AuthController extends Controller
 
         //ambil data request 
         $credential = $request->only('username','password');
+        //dd($credential);
         //cek jika data valid
         if(Auth::attempt($credential)){
             //kalau berhasil
             $user = Auth::user();
 
             //cek jika admin
-            if($user->level_id == '1'){
-                return redirect()->intended('admin');
-            }
-            else if($user->level_id == '2'){
-                return redirect()->intended('manager');
-            }
+// cek jika admin
+if ($user->level_id == 1) {
+    return redirect()->intended('admin');
+} else if ($user->level_id == 2) {
+    return redirect()->intended('manager');
+}
+
             return redirect()->intended('/');
         }
         //jika gagal/tidak valid
@@ -56,10 +59,13 @@ class AuthController extends Controller
         ->withInput()
         ->withErrors(['login_gagal'=>'Pastikan kembali username dan password benar']);
     }
-    public function register(){
+
+    public function register()
+    {
         //tampil view
         return view('register');
     }
+
     //aksi form register
     public function proses_register(Request $request)
     {

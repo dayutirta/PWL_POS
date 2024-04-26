@@ -23,7 +23,7 @@ class Cek_login
         //simpan data user
         $user = Auth::user();
         //jika user memiliki level
-        if($user->level_id == $roles){
+        if($user->level_id== $roles){
             return $next($request);
         }
         //jika tidak memiliki akses
