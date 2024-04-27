@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\DetailModel;
 use App\Models\UserModel;
 use App\Models\BarangModel;
+use App\Models\StokModel;
 use App\Models\TransaksiModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -90,6 +91,18 @@ class TransaksiController extends Controller
             'jumlah'       => $request->jumlah,
             'harga'        => $total_harga
         ]);
+        // Ambil stok saat ini dari database berdasarkan barang_id
+        $stok = StokModel::findOrFail($request->barang_id);
+    
+        // Ambil jumlah stok yang ada dan jumlah yang akan ditambahkan
+        $stok_jumlah = $stok->stok_jumlah;
+        $jumlah_tambah = $request->jumlah;
+    
+        // Hitung total stok baru setelah ditambahkan
+        $total_stok_baru = $stok_jumlah - $jumlah_tambah;
+    
+        // Update stok di database dengan nilai yang baru
+        $stok->update(['stok_jumlah' => $total_stok_baru]);
     
         return redirect('/transaksi')->with('success', 'Data transaksi berhasil disimpan');
     }
