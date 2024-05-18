@@ -1,5 +1,4 @@
-@extends('layout.template')
-
+@extends('layouts.template')
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
@@ -8,22 +7,22 @@
         </div>
         <div class="card-body">
             @empty($kategori)
-            <div class="alert alert-danger alert-dismissible">
-                <h5><i class="icon fas fa-ban"></i> Kesalahan!</h5>
-                Data yang Anda cari tidak ditemukan.
-            </div>
+                <div class="alert alert-danger alert-dismissible">
+                    <h5><i class="icon fas fa-ban"></i> Kesalahan!</h5>
+                    Data yang Anda cari tidak ditemukan.
+                </div>
             @else
-                <table class="table table-bordered table-striped table-hover table-sm">
+                <table class="table table-bordered table-striped table-hover tablesm">
                     <tr>
                         <th>ID</th>
                         <td>{{ $kategori->kategori_id }}</td>
                     </tr>
                     <tr>
-                        <th>Kode Level</th>
+                        <th>Kode Kategori</th>
                         <td>{{ $kategori->kategori_kode }}</td>
-                    </tr>                    
+                    </tr>
                     <tr>
-                        <th>Nama Level</th>
+                        <th>Nama Kategori</th>
                         <td>{{ $kategori->kategori_nama }}</td>
                     </tr>
                 </table>
@@ -32,7 +31,6 @@
         </div>
     </div>
 @endsection
-
 @push('css')
 @endpush
 @push('js')
